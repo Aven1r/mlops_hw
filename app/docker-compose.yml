@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  ml:
+    container_name: ml
+    restart: always
+    build:
+      dockerfile: ./docker/ml/ml.dockerfile
+    ports:
+      - "0.0.0.0:8001:8001"
+    command: uvicorn ml.__main__:app --reload --host 0.0.0.0 --port 8001
+    volumes:
+      - ./:/ml_data
+
+
+
+  streamlit:
+    build: 
+      dockerfile: ./docker/app/app.dockerfile
+    depends_on:
+      - ml
+    ports: 
+      - 8000:8501
+    volumes:
+      - ./:/app_data
+
+
